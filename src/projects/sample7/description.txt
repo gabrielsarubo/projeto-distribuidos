@@ -1,0 +1,1 @@
+exemplo de roteamento de nós sensores
