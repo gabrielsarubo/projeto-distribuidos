@@ -1,0 +1,10 @@
+/AppConfig.class
+/Configuration$DefaultInConfigFile.class
+/Configuration$ImplementationChoiceInConfigFile.class
+/Configuration$OptionalInConfigFile.class
+/Configuration$PrivateInConfigFile.class
+/Configuration$SectionInConfigFile.class
+/Configuration.class
+/CorruptConfigurationEntryException.class
+/SimulationException.class
+/WrongConfigurationException.class
