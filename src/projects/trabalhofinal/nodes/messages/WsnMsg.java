@@ -10,7 +10,7 @@ import sinalgo.nodes.messages.Message;
 
 /**
  *
- * @author 	Gustavo
+ * @author gabrielsarubo
  */
 public class WsnMsg extends Message {
     //Identificador da mensagem

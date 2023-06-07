@@ -11,7 +11,7 @@ import sinalgo.nodes.timers.Timer;
 
 /**
  *
- * @author Gustavo
+ * @author gabrielsarubo
  */
 public class WsnMessageTimer extends Timer {
 
