@@ -79,7 +79,7 @@ public class CustomGlobal extends AbstractCustomGlobal{
 		// Query the user for an input
 		String answer = JOptionPane.showInputDialog(null, "This is an example.\nType in any text to echo.");
 		// Show an information message 
-		JOptionPane.showMessageDialog(null, "You typed GUSTAVO 12/04 '" + answer + "'", "Example Echo", JOptionPane.INFORMATION_MESSAGE);
+		JOptionPane.showMessageDialog(null, "You typed '" + answer + "'", "Example Echo", JOptionPane.INFORMATION_MESSAGE);
 	}
 	
 	/**
@@ -90,6 +90,6 @@ public class CustomGlobal extends AbstractCustomGlobal{
 	
 	@AbstractCustomGlobal.CustomButton(buttonText="GO", toolTipText="A sample button")
 	public void sampleButton() {
-		JOptionPane.showMessageDialog(null, "You Pressed the 'GO' button. GUSTAVO 12/04");
+		JOptionPane.showMessageDialog(null, "You Pressed the 'GO' button.s");
 	}
 }
