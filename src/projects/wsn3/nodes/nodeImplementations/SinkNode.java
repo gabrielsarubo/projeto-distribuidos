@@ -15,8 +15,10 @@ import sinalgo.tools.Tools;
 import projects.wsn3.nodes.messages.WsnMsg;
 import projects.wsn3.nodes.timers.WsnMessageTimer;
  
-
-
+/**
+ * 
+ * @author sarubo
+ */
 
 public class SinkNode extends Node {
 

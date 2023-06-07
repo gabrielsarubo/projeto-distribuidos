@@ -3,7 +3,7 @@ package projects.trabalhofinal.nodes.nodeImplementations;
 
 import java.awt.Color;
 
-import projects.wsn3.nodes.messages.WsnMsg;
+import projects.trabalhofinal.nodes.messages.WsnMsg;
 
 import sinalgo.configuration.WrongConfigurationException;
 
@@ -12,11 +12,12 @@ import sinalgo.nodes.Node.NodePopupMethod;
 import sinalgo.nodes.messages.Inbox;
 import sinalgo.nodes.messages.Message;
 import sinalgo.tools.Tools;
-import projects.wsn3.nodes.messages.WsnMsg;
-import projects.wsn3.nodes.timers.WsnMessageTimer;
+import projects.trabalhofinal.nodes.messages.WsnMsg;
+import projects.trabalhofinal.nodes.timers.WsnMessageTimer;
  
-
-
+/**
+ * @author gabrielsarubo
+ */
 
 public class SinkNode extends Node {
 

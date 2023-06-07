@@ -5,7 +5,7 @@
  */
 package projects.trabalhofinal.nodes.timers;
 
-import projects.wsn3.nodes.messages.WsnMsg;
+import projects.trabalhofinal.nodes.messages.WsnMsg;
 import sinalgo.nodes.Node;
 import sinalgo.nodes.timers.Timer;
 

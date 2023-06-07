@@ -7,8 +7,8 @@ package projects.trabalhofinal.nodes.nodeImplementations;
 
 import java.awt.Color;
 
-import projects.wsn3.nodes.messages.WsnMsg;
-import projects.wsn3.nodes.timers.WsnMessageTimer;
+import projects.trabalhofinal.nodes.messages.WsnMsg;
+import projects.trabalhofinal.nodes.timers.WsnMessageTimer;
 import sinalgo.configuration.WrongConfigurationException;
 import sinalgo.nodes.Node;
 import sinalgo.nodes.messages.Inbox;
@@ -18,7 +18,7 @@ import sinalgo.tools.Tools;
 import java.util.Random;
 
 
-public class SimpleNode extends Node {
+public class SensorNode extends Node {
 
     //Armazenar o no que sera usado para alcancar a Estacao-Base
     private Node proximoNoAteEstacaoBase;
@@ -67,7 +67,7 @@ public class SimpleNode extends Node {
                 if (encaminhar) {
                     //Devemos alterar o campo forwardingHop(da mensagem) para armazenar o
                 	//noh que vai encaminhar a mensagem.
-                	System.out.println(this.ID+" recebe dados de "+wsnMessage.origem.ID);
+                	// System.out.println(this.ID+" recebe dados de "+wsnMessage.origem.ID);
                     wsnMessage.forwardingHop = this;
                     this.broadcast(wsnMessage);
                 }
