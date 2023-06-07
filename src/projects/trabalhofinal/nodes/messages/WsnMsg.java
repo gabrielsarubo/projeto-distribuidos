@@ -5,6 +5,8 @@
  */
 package projects.trabalhofinal.nodes.messages;
 
+import java.awt.Color;
+
 import sinalgo.nodes.Node;
 import sinalgo.nodes.messages.Message;
 
@@ -15,32 +17,34 @@ import sinalgo.nodes.messages.Message;
 public class WsnMsg extends Message {
     //Identificador da mensagem
     public Integer sequenceID;
-//Tempo de vida do Pacote
+    //Tempo de vida do Pacote
     public Integer ttl;
-//No de destino
+    //No de destino
     public Node destino;
-//No de origem
+    //No de origem
     public Node origem;
-//No que vai reencaminhar a mensagem
+    //No que vai reencaminhar a mensagem
     public Node forwardingHop;
-//Numero de saltos ate o destino
+    //Numero de saltos ate o destino
     public Integer saltosAteDestino;
-//Tipo do Pacote. 0 para Estabelecimento de Rotas e 1 para pacotes de dados
+    //Tipo do Pacote. 0 para Estabelecimento de Rotas e 1 para pacotes de dados
     public Integer tipoMsg = 0;
-//Construtor da Classe
+    // Cor do SinkNode de origem
+    public Color corOrigem;
    
-    public WsnMsg(Integer seqID, Node origem, Node destino, Node forwardingHop, Integer tipo) {
+    public WsnMsg(Integer seqID, Node origem, Node destino, Node forwardingHop, Integer tipo, Color corOrigem) {
         this.sequenceID = seqID;
         this.origem = origem;
         this.destino = destino;
         this.forwardingHop = forwardingHop;
         this.tipoMsg = tipo;
+        this.corOrigem = corOrigem;
     }
 
     @Override
     public Message clone() {
         WsnMsg msg = new WsnMsg(this.sequenceID, this.origem,
-        this.destino, this.forwardingHop, this.tipoMsg);
+        this.destino, this.forwardingHop, this.tipoMsg, this.corOrigem);
         msg.ttl = this.ttl;
         msg.saltosAteDestino = saltosAteDestino;
         return msg;
