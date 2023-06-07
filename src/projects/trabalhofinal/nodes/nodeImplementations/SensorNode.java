@@ -49,7 +49,8 @@ public class SensorNode extends Node {
 
                         proximoNoAteEstacaoBase = inbox.getSender();
                         sequenceNumber = wsnMessage.sequenceID;
-                        this.setColor(Color.PINK);
+                        // this.setColor(Color.PINK);
+                        this.setColor(wsnMessage.corOrigem);
                     } else if (sequenceNumber < wsnMessage.sequenceID) {
                     //Recurso simples para evitar loop.
                         //Exemplo: Noh A transmite em brodcast. Noh B recebe a
@@ -80,7 +81,7 @@ public class SensorNode extends Node {
        // throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
        if (this.proximoNoAteEstacaoBase != null){
         if (tempoEnvio < tempoRound){
-            WsnMsg wsnMessage = new WsnMsg(sequencia, this, this.origem, this, 1);
+            WsnMsg wsnMessage = new WsnMsg(sequencia, this, this.origem, this, 1, Color.red);
             this.sequencia++;
             this.send(wsnMessage, proximoNoAteEstacaoBase);
             this.tempoRound = 0;
@@ -89,19 +90,12 @@ public class SensorNode extends Node {
        }
     }
 
-    /*@NodePopupMethod(menuText = "Construir Arvore de Roteamento")
-    public void construirRoteamento() {
-        this.proximoNoAteEstacaoBase = this;
-        WsnMsg wsnMessage = new WsnMsg(1, this, null, this, 0);
-        WsnMessageTimer timer = new WsnMessageTimer(wsnMessage);
-        timer.startRelative(1, this);
-    }*/
-
     @Override
     public void init() {
         //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    	// o tempo (em rounds) de envio sera sempre entre 100 e 200
         tempoEnvio = 100 + random.nextInt(200);
-        this.setColor(Color.GREEN);
+        this.setColor(Color.BLACK);
     }
 
     @Override
