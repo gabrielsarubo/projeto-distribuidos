@@ -28,10 +28,12 @@ public class SinkNode extends Node {
         while (inbox.hasNext()) {
             Message message = inbox.next();
             if (message instanceof WsnMsg) {
-                WsnMsg wsnMessage = (WsnMsg) message;                
+                WsnMsg wsnMessage = (WsnMsg) message;
+                // Se entrar na condicao abaixo, isso significa que a Mensagem voltou
+                // para o SinkNode que originalmente envio a Mensagem aos Nos Sensores
                 if (wsnMessage.tipoMsg == 1) {
                     System.out.println("Sink-" + this.ID + " recebe mensagem " + wsnMessage.sequenceID + " de Node-" + wsnMessage.origem.ID);
-                    Tools.appendToOutput("Sink-" + this.ID + " recebe mensagem " + wsnMessage.sequenceID + " de Node-" + wsnMessage.origem.ID + "\n");
+                    //Tools.appendToOutput("Sink-" + this.ID + " recebe mensagem " + wsnMessage.sequenceID + " de Node-" + wsnMessage.origem.ID + "\n");
                 }
             }
         }
@@ -84,7 +86,7 @@ public class SinkNode extends Node {
     @Override
     public void draw(Graphics g, PositionTransformation pt, boolean highlight) {
     	// TODO Auto-generated method stub
-    	super.drawNodeAsSquareWithText(g, pt, highlight, "Sink", 10, Color.BLACK);
+    	super.drawNodeAsSquareWithText(g, pt, highlight, "Sink-"+this.ID, 10, Color.BLACK);
     }
 
 }
