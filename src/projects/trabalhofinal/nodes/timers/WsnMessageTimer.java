@@ -26,14 +26,14 @@ public class WsnMessageTimer extends Timer {
     public void fire() {
     	// identificar qual No de destino esta chamando esta funcao fire()
     	if (this.message.origem instanceof SinkNode) {
-    		System.out.println("Metodo fire() fez um broadcast vindo da origem SinkNode-"+message.origem.ID);
-    	} else {
-    		System.out.println("Metodo fire() foi chamado de um SensorNode");
+    		System.out.println("O timer do SinkNode-"+message.origem.ID+" terminou.\nIniciando broadcast da mensagem deste Sink para os Nos vizinhos...");
     	}
     	
     	// Construir uma arvore de roteamento/estabelecer rotas a partir de um SinkNode especifico
     	// Fazer um broadcast da mensagem para todos os Nos vizinhos
-    	// esse metodo envia uma msg e retorna um pacote
+    	// este metodo envia uma msg e recebe um pacote
+    	
+    	// TODO por que colocar ((Node)node)
         ((Node)node).broadcast(message);
     }
 

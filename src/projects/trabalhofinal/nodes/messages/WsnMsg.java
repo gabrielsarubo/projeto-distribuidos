@@ -29,22 +29,18 @@ public class WsnMsg extends Message {
     public Integer saltosAteDestino;
     //Tipo do Pacote. 0 para Estabelecimento de Rotas e 1 para pacotes de dados
     public Integer tipoMsg = 0;
-    // Cor do SinkNode de origem
-    public Color corOrigem;
    
-    public WsnMsg(Integer seqID, Node origem, Node destino, Node forwardingHop, Integer tipo, Color corOrigem) {
+    public WsnMsg(Integer seqID, Node origem, Node destino, Node forwardingHop, Integer tipo) {
         this.sequenceID = seqID;
         this.origem = origem;
         this.destino = destino;
         this.forwardingHop = forwardingHop;
         this.tipoMsg = tipo;
-        this.corOrigem = corOrigem;
     }
 
     @Override
     public Message clone() {
-        WsnMsg msg = new WsnMsg(this.sequenceID, this.origem,
-        this.destino, this.forwardingHop, this.tipoMsg, this.corOrigem);
+        WsnMsg msg = new WsnMsg(this.sequenceID, this.origem, this.destino, this.forwardingHop, this.tipoMsg);
         msg.ttl = this.ttl;
         msg.saltosAteDestino = saltosAteDestino;
         return msg;
