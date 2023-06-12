@@ -13,7 +13,7 @@ import sinalgo.nodes.Node;
 import sinalgo.nodes.messages.Inbox;
 import sinalgo.nodes.messages.Message;
 
-import java.util.Random;
+import utils.Util;
 
 public class SensorNode extends Node {
 
@@ -24,7 +24,7 @@ public class SensorNode extends Node {
 	private Integer sequenceNumber = 0;
 
 	private Node origem;
-	private Random random = new Random();
+
 	private int sequencia = 0;
 	private int tempoEnvio = 0;
 	private int tempoRound = 0;
@@ -153,9 +153,10 @@ public class SensorNode extends Node {
 	public void init() {
 		// throw new UnsupportedOperationException("Not supported yet."); //To change
 		// body of generated methods, choose Tools | Templates.
-		// o tempo (em rounds) de envio sera sempre entre 100 e 300
-		tempoEnvio = 100 + random.nextInt(200);
-		this.setColor(Color.BLACK);
+		// o tempo (em rounds) de envio estara sempre entre 51 e 149
+		tempoEnvio = 50 + Util.nextInt(100);
+		System.out.println("SensorNode-"+this.ID+" envia pacotes a cada "+tempoEnvio+" rounds");
+		this.setColor(Color.BLACK);		
 	}
 
 	@Override
