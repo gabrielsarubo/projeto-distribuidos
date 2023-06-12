@@ -57,7 +57,7 @@ public class SinkNode extends Node {
     	 * this: aponta para o No que vai reencaminhar esta mensagem, neste caso, este mesmo Sink
     	 * 0: msg do tipo 0 serve para estabelecimento de rotas
     	 */
-        WsnMsg wsnMessage = new WsnMsg(1, this, null, this, 0);
+        WsnMsg wsnMessage = new WsnMsg(1, this, null, 0);
         WsnMessageTimer timer = new WsnMessageTimer(wsnMessage);
         timer.startRelative(1, this);
     }

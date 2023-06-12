@@ -8,13 +8,10 @@ package projects.trabalhofinal.nodes.nodeImplementations;
 import java.awt.Color;
 
 import projects.trabalhofinal.nodes.messages.WsnMsg;
-import projects.trabalhofinal.nodes.timers.WsnMessageTimer;
 import sinalgo.configuration.WrongConfigurationException;
 import sinalgo.nodes.Node;
-import sinalgo.nodes.Node.NodePopupMethod;
 import sinalgo.nodes.messages.Inbox;
 import sinalgo.nodes.messages.Message;
-import sinalgo.tools.Tools;
 
 import java.util.Random;
 
@@ -34,7 +31,8 @@ public class SensorNode extends Node {
 
 	@Override
 	public void handleMessages(Inbox inbox) {
-//    	System.out.println("Tamanho do inbox do Sensor-"+this.ID+" = "+inbox.size());
+		System.out.println("\n---\nDentro de SensorNode-"+this.ID);
+    	//System.out.println("Tamanho do inbox do Sensor-"+this.ID+" = "+inbox.size());
 
 		while (inbox.hasNext()) {
 			Message message = inbox.next();
@@ -55,9 +53,9 @@ public class SensorNode extends Node {
 					if (proximoNoAteEstacaoBase == null) {
 						System.out.println("SensorNode-" + this.ID + " recebe mensagem do tipo-0 de SinkNode-"
 								+ wsnMessage.origem.ID);
-						// Tools.appendToOutput("SensorNode-" + this.ID + " recebe pacote de Sink-" +
-						// wsnMessage.origem.ID + "\n");
 
+						//System.out.println("inbox.getSender() = "+inbox.getSender());
+						//System.out.println("wsnMessage.forwardingHop = "+wsnMessage.forwardingHop);
 						proximoNoAteEstacaoBase = inbox.getSender();// proximo No ate Estacao-Base vai ser o No que
 																	// enviou a mensagem para este SensorNode
 						sequenceNumber = wsnMessage.sequenceID;
@@ -92,7 +90,7 @@ public class SensorNode extends Node {
 						} else {
 							/**
 							 * Evitar que este No transmita em broadcast novamente para tanto, sera
-							 * atribuido false para a variavel encaminhar dessa forma, nao sera feito um
+							 * atribuido false para a variavel "shouldBroadcast" dessa forma, nao sera feito um
 							 * novo broadcast
 							 */
 							shouldBroadcast = Boolean.FALSE;
@@ -101,7 +99,7 @@ public class SensorNode extends Node {
 				} else if (wsnMessage.tipoMsg == 1) {
 					// Se entrar neste IF, isso significa que a Mensagem esta "voltando" para o No
 					// Estacao-Base
-					// ou seja, este No Sensor esta "enviando" uma Mensagem o No Estacao-Base
+					// ou seja, este No Sensor esta "enviando" uma Mensagem ao No Estacao-Base
 					shouldBroadcast = Boolean.FALSE;
 					this.send(wsnMessage, proximoNoAteEstacaoBase);
 				}
@@ -110,8 +108,13 @@ public class SensorNode extends Node {
 				// Mensagem aos vizinhos
 				// caso contrario, este No Sensor nao transmite a Mensagem para os Nos vizinhos
 				if (shouldBroadcast) {
-					// Apontar o campo forwardingHop (da mensagem) para este No Sensor
-					wsnMessage.forwardingHop = this;
+					/*
+					 * Colocar dentro da futura Mensagem uma referencia para este No Sensor
+					 * que vai dizer ao No que receber esta msg "qual No encaminhou a msg"
+					 * 
+					 * TODO Mas o inbox.getSender() ja nao faz isso?
+					 */
+					//wsnMessage.forwardingHop = this;
 					this.broadcast(wsnMessage);
 				}
 			}
@@ -137,7 +140,7 @@ public class SensorNode extends Node {
 		// msg tipo-0
 		if (proximoNoAteEstacaoBase != null) {
 			if (tempoEnvio < tempoRound) {
-				WsnMsg wsnMessage = new WsnMsg(sequencia, this, this.origem, this, 1);
+				WsnMsg wsnMessage = new WsnMsg(sequencia, this, this.origem, 1);
 				sequencia++;
 				send(wsnMessage, proximoNoAteEstacaoBase);
 				tempoRound = 0;
@@ -176,7 +179,6 @@ public class SensorNode extends Node {
 	@NodePopupMethod(menuText = "Ver Proximo No Ate Estacao-Base")
 	public void verProximoNoAteEstacaoBase() {
 		System.out.println("O proximo No ate estacao-base deste Sensor eh " + proximoNoAteEstacaoBase);
-		setColor(Color.BLACK);
 	}
 
 }
