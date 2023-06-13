@@ -18,7 +18,7 @@ public class WsnMsg extends Message {
     // Tempo de vida do Pacote
     public Integer ttl;
     // No de destino
-    public Node destino;
+    //public Node destino;
     // No de origem
     public Node origem;
     // No que re-encaminhou a mensagem
@@ -29,16 +29,15 @@ public class WsnMsg extends Message {
     // 0: Estabelecimento de rotas; 1: Pacotes de dados
     public Integer tipoMsg = 0;
    
-    public WsnMsg(Integer seqID, Node origem, Node destino, Integer tipo) {
+    public WsnMsg(Integer seqID, Node origem, Integer tipo) {
         this.sequenceID = seqID;
         this.origem = origem;
-        this.destino = destino;
         this.tipoMsg = tipo;
     }
 
     @Override
     public Message clone() {
-        WsnMsg msg = new WsnMsg(this.sequenceID, this.origem, this.destino, this.tipoMsg);
+        WsnMsg msg = new WsnMsg(this.sequenceID, this.origem, this.tipoMsg);
         msg.ttl = this.ttl;
         msg.saltosAteDestino = saltosAteDestino;
         return msg;

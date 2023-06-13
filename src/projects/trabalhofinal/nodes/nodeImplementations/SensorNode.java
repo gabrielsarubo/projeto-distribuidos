@@ -23,7 +23,7 @@ public class SensorNode extends Node {
 	// Armazena o numero de sequencia da ultima mensagem recebida
 	private Integer sequenceNumber = 0;
 
-	private Node origem;
+	//private Node origem;
 
 	private int sequencia = 0;
 	private int tempoEnvio = 0;
@@ -99,7 +99,7 @@ public class SensorNode extends Node {
 				} else if (wsnMessage.tipoMsg == 1) {
 					// Se entrar neste IF, isso significa que a Mensagem esta "voltando" para o No
 					// Estacao-Base
-					// ou seja, este No Sensor esta "enviando" uma Mensagem ao No Estacao-Base
+					// ou seja, este No Sensor (ou outro No) quer "enviar" uma Mensagem ao No Estacao-Base
 					shouldBroadcast = Boolean.FALSE;
 					this.send(wsnMessage, proximoNoAteEstacaoBase);
 				}
@@ -126,6 +126,12 @@ public class SensorNode extends Node {
 		// throw new UnsupportedOperationException("Not supported yet."); //To change
 		// body of generated methods, choose Tools | Templates.
 		/**
+		 * Obs.: Este metodo executa todo round e tbm eh executado antes de handleMessages()
+		 * Ele se comporta como um "contador", o qual so vai parar o round do simulador
+		 * atingir a mesma qtd de rounds deste No (armazenado em tempoEnvio)
+		 * 
+		 * Eh este metodo que vai enviar a Mensagem "de volta" ao Sink indefinidamente
+		 * 
 		 * Precisa existir um proximoNoAteEstacaoBase para que este NoSensor possa
 		 * enviar uma Mensagem para a Estacao-Base, e continuar fazendo isso pra sempre
 		 * 
@@ -137,10 +143,10 @@ public class SensorNode extends Node {
 
 		// A condicao abaixo verifica se existe um Proximo No para Estacao-Base
 		// Lembrando que esse Proximo No soh existira depois que este Sensor receber uma
-		// msg tipo-0
+		// msg tipo-0, ou seja, receber um pacote em broadcast
 		if (proximoNoAteEstacaoBase != null) {
 			if (tempoEnvio < tempoRound) {
-				WsnMsg wsnMessage = new WsnMsg(sequencia, this, this.origem, 1);
+				WsnMsg wsnMessage = new WsnMsg(sequencia, this, 1);
 				sequencia++;
 				send(wsnMessage, proximoNoAteEstacaoBase);
 				tempoRound = 0;
@@ -153,10 +159,10 @@ public class SensorNode extends Node {
 	public void init() {
 		// throw new UnsupportedOperationException("Not supported yet."); //To change
 		// body of generated methods, choose Tools | Templates.
-		// o tempo (em rounds) de envio estara sempre entre 51 e 149
+		// o tempo (em rounds) de envio estara sempre entre 50 e 149
 		tempoEnvio = 50 + Util.nextInt(100);
 		System.out.println("SensorNode-"+this.ID+" envia pacotes a cada "+tempoEnvio+" rounds");
-		this.setColor(Color.BLACK);		
+		this.setColor(Color.BLACK);
 	}
 
 	@Override

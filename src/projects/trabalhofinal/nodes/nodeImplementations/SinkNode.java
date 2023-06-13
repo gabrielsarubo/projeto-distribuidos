@@ -1,6 +1,5 @@
 package projects.trabalhofinal.nodes.nodeImplementations;
 
-
 import java.awt.Color;
 import java.awt.Graphics;
 
@@ -9,12 +8,9 @@ import projects.trabalhofinal.nodes.messages.WsnMsg;
 import sinalgo.configuration.WrongConfigurationException;
 import sinalgo.gui.transformation.PositionTransformation;
 import sinalgo.nodes.Node;
-import sinalgo.nodes.Node.NodePopupMethod;
 import sinalgo.nodes.messages.Inbox;
 import sinalgo.nodes.messages.Message;
-import sinalgo.tools.Tools;
 import utils.Util;
-import projects.trabalhofinal.nodes.messages.WsnMsg;
 import projects.trabalhofinal.nodes.timers.WsnMessageTimer;
  
 /**
@@ -47,17 +43,16 @@ public class SinkNode extends Node {
 
     @NodePopupMethod(menuText = "Construir Arvore de Roteamento")
     public void construirRoteamento() {
-    	System.out.println("Arvore de roteamento construida para Sink-"+this.ID);
+    	System.out.println("Sera construida uma Arvore de Roteamento para o Sink-"+this.ID+" no proximo round.");
 
     	/**
     	 * new WsnMsg()
     	 * 1: representa o ID da sequencia
     	 * this: aponta para o No de origem, neste caso No de origem eh este proprio Sink
     	 * null: aponta para o No de destino, neste caso, nao existe um destino
-    	 * this: aponta para o No que vai reencaminhar esta mensagem, neste caso, este mesmo Sink
     	 * 0: msg do tipo 0 serve para estabelecimento de rotas
     	 */
-        WsnMsg wsnMessage = new WsnMsg(1, this, null, 0);
+        WsnMsg wsnMessage = new WsnMsg(1, this, 0);
         WsnMessageTimer timer = new WsnMessageTimer(wsnMessage);
         timer.startRelative(1, this);
     }
