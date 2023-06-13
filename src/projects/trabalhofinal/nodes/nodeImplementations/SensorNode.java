@@ -28,10 +28,12 @@ public class SensorNode extends Node {
 	private int sequencia = 0;
 	private int tempoEnvio = 0;
 	private int tempoRound = 0;
+	
+	private int nSaltosDesdeOrigem;
 
 	@Override
 	public void handleMessages(Inbox inbox) {
-		System.out.println("\n---\nDentro de SensorNode-"+this.ID);
+		//System.out.println("\n---\nDentro de SensorNode-"+this.ID);
     	//System.out.println("Tamanho do inbox do Sensor-"+this.ID+" = "+inbox.size());
 
 		while (inbox.hasNext()) {
@@ -51,8 +53,10 @@ public class SensorNode extends Node {
 					 * Sensores e tentando Estabelecer uma Rota (ou arvore de roteamento)
 					 */
 					if (proximoNoAteEstacaoBase == null) {
-						System.out.println("SensorNode-" + this.ID + " recebe mensagem do tipo-0 de SinkNode-"
-								+ wsnMessage.origem.ID);
+						wsnMessage.nSaltosDesdeOrigem++;
+						this.nSaltosDesdeOrigem = wsnMessage.nSaltosDesdeOrigem;
+						//System.out.println("SensorNode-" + this.ID + " recebe mensagem do tipo-0 de SinkNode-"
+						//		+ wsnMessage.origem.ID);
 
 						//System.out.println("inbox.getSender() = "+inbox.getSender());
 						//System.out.println("wsnMessage.forwardingHop = "+wsnMessage.forwardingHop);
@@ -78,23 +82,20 @@ public class SensorNode extends Node {
 						 * Caso o Novo Sink esteja mais perto (a menos saltos deste No Sensor) devemos
 						 * atualizar o proximoNoAteEstacaoBase
 						 */
-
-						if (sequenceNumber < wsnMessage.sequenceID) {
-							/**
-							 * Recurso simples para evitar loop. Exemplo: Noh A transmite em brodcast. Noh B
-							 * recebe a msg e retransmite em broadcast. Consequentemente, noh A ira receber
-							 * a msg. Sem esse condicional, noh A iria retransmitir novamente, gerando um
-							 * loop
-							 */
-							sequenceNumber = wsnMessage.sequenceID;
-						} else {
-							/**
-							 * Evitar que este No transmita em broadcast novamente para tanto, sera
-							 * atribuido false para a variavel "shouldBroadcast" dessa forma, nao sera feito um
-							 * novo broadcast
-							 */
-							shouldBroadcast = Boolean.FALSE;
-						}
+//						System.out.println(this);
+//						System.out.println("Mensagem tipo-0 esta vindo de = "+inbox.getSender());
+//						
+//						var nSaltos_atual = this.nSaltosDesdeOrigem;
+//						var nSaltos_novo = wsnMessage.nSaltosDesdeOrigem;
+//						
+//						System.out.println("\nnSaltos atual = "+nSaltos_atual);
+//						System.out.println("nSaltos novo = "+nSaltos_novo);
+//						
+//						System.out.println("\nthis.sequenceNumber = "+this.sequenceNumber);
+//						System.out.println("wsnMessage.sequenceID = "+wsnMessage.sequenceID);
+						
+						//sequenceNumber < wsnMessage.sequenceID eh sempre FALSE
+						shouldBroadcast = Boolean.FALSE;
 					}
 				} else if (wsnMessage.tipoMsg == 1) {
 					// Se entrar neste IF, isso significa que a Mensagem esta "voltando" para o No
@@ -127,7 +128,7 @@ public class SensorNode extends Node {
 		// body of generated methods, choose Tools | Templates.
 		/**
 		 * Obs.: Este metodo executa todo round e tbm eh executado antes de handleMessages()
-		 * Ele se comporta como um "contador", o qual so vai parar o round do simulador
+		 * Ele se comporta como um "contador", o qual so vai parar quando o round do simulador
 		 * atingir a mesma qtd de rounds deste No (armazenado em tempoEnvio)
 		 * 
 		 * Eh este metodo que vai enviar a Mensagem "de volta" ao Sink indefinidamente
@@ -183,9 +184,11 @@ public class SensorNode extends Node {
 		// body of generated methods, choose Tools | Templates.
 	}
 
-	@NodePopupMethod(menuText = "Ver Proximo No Ate Estacao-Base")
-	public void verProximoNoAteEstacaoBase() {
-		System.out.println("O proximo No ate estacao-base deste Sensor eh " + proximoNoAteEstacaoBase);
+	@NodePopupMethod(menuText = "Mostrar Atributos deste No-Sensor")
+	public void mostrarAtributosDesteSensor() {
+		System.out.println("----\nExibindo atributos de SensorNode-"+this.ID);
+		System.out.println("Proximo No ate estacao-base = " + proximoNoAteEstacaoBase);
+		System.out.println("nSaltosDesdeOrigem = "+nSaltosDesdeOrigem);
 	}
 
 }

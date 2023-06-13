@@ -25,7 +25,7 @@ public class WsnMessageTimer extends Timer {
     public void fire() {
     	// identificar qual No de destino esta chamando esta funcao fire()
     	if (this.message.origem instanceof SinkNode) {
-    		System.out.println("O timer do SinkNode-"+message.origem.ID+" terminou.\nIniciando broadcast da mensagem deste Sink para os Nos vizinhos...");
+    		System.out.println("O timer do SinkNode-"+message.origem.ID+" foi disparado.\nIniciando broadcast da mensagem deste Sink para os Nos vizinhos...");
     		
     		// Construir uma arvore de roteamento/estabelecer rotas a partir de um SinkNode especifico
     		// Fazer um broadcast da mensagem para todos os Nos vizinhos
