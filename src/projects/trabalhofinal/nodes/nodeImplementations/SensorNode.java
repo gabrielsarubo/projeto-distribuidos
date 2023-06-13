@@ -21,9 +21,10 @@ public class SensorNode extends Node {
 	private Node proximoNoAteEstacaoBase;
 
 	// Armazena o numero de sequencia da ultima mensagem recebida
-	private Integer sequenceNumber = 0;
+	//private Integer sequenceNumber = 0;
 
-	//private Node origem;
+	// Armazena o No Estacao-Base atual que este Sensor deve mandar msg
+	private Node estacaoBasePai;
 
 	private int sequencia = 0;
 	private int tempoEnvio = 0;
@@ -58,44 +59,26 @@ public class SensorNode extends Node {
 						//System.out.println("SensorNode-" + this.ID + " recebe mensagem do tipo-0 de SinkNode-"
 						//		+ wsnMessage.origem.ID);
 
-						//System.out.println("inbox.getSender() = "+inbox.getSender());
-						//System.out.println("wsnMessage.forwardingHop = "+wsnMessage.forwardingHop);
+						estacaoBasePai = wsnMessage.origem;
 						proximoNoAteEstacaoBase = inbox.getSender();// proximo No ate Estacao-Base vai ser o No que
 																	// enviou a mensagem para este SensorNode
-						sequenceNumber = wsnMessage.sequenceID;
+						//sequenceNumber = wsnMessage.sequenceID;
 						// System.out.println("O proximo no ate estacao-base do SensorNode-"+this.ID+"
 						// eh o Node-"+proximoNoAteEstacaoBase.ID);
 
 						this.setColor(wsnMessage.origem.getColor());
-					} else {
-						/**
-						 * Se entrou aqui, eh porque ja existe um proximo No ate Estacao-Base logo,
-						 * proximoNoAteEstacaoBase != null
-						 * 
-						 * TODO Adiconar condicao que seja cumprida no caso de um Novo No Estaca-Base
-						 * for adicionado e ele estiver mais perto que o No Estacao-Base deste No Sensor
-						 * 
-						 * Para verificar se o novo Sink esta mais perto que o Sink antigo, devemos
-						 * comparar a qtd de saltos ate cada Sink; a Nova Estacao-Base devera ser aquela
-						 * que esta a menos saltos deste No
-						 * 
-						 * Caso o Novo Sink esteja mais perto (a menos saltos deste No Sensor) devemos
-						 * atualizar o proximoNoAteEstacaoBase
-						 */
-//						System.out.println(this);
-//						System.out.println("Mensagem tipo-0 esta vindo de = "+inbox.getSender());
-//						
-//						var nSaltos_atual = this.nSaltosDesdeOrigem;
-//						var nSaltos_novo = wsnMessage.nSaltosDesdeOrigem;
-//						
-//						System.out.println("\nnSaltos atual = "+nSaltos_atual);
-//						System.out.println("nSaltos novo = "+nSaltos_novo);
-//						
-//						System.out.println("\nthis.sequenceNumber = "+this.sequenceNumber);
-//						System.out.println("wsnMessage.sequenceID = "+wsnMessage.sequenceID);
-						
-						//sequenceNumber < wsnMessage.sequenceID eh sempre FALSE
+					} else if (wsnMessage.nSaltosDesdeOrigem >= (this.nSaltosDesdeOrigem-1)) {
 						shouldBroadcast = Boolean.FALSE;
+					} else {
+						if (wsnMessage.origem.ID != this.estacaoBasePai.ID) {
+							wsnMessage.nSaltosDesdeOrigem++;
+							this.nSaltosDesdeOrigem = wsnMessage.nSaltosDesdeOrigem;
+							estacaoBasePai = wsnMessage.origem;
+							proximoNoAteEstacaoBase = inbox.getSender();
+							this.setColor(wsnMessage.origem.getColor());
+						} else {
+							shouldBroadcast = Boolean.FALSE;
+						}
 					}
 				} else if (wsnMessage.tipoMsg == 1) {
 					// Se entrar neste IF, isso significa que a Mensagem esta "voltando" para o No
@@ -176,6 +159,16 @@ public class SensorNode extends Node {
 	public void postStep() {
 		// throw new UnsupportedOperationException("Not supported yet."); //To change
 		// body of generated methods, choose Tools | Templates.
+		/**
+		 * Ao final de cada "step" criar um timer a cada 50 rounds que executa uma tarefa
+		 * essa tarefa envia uma Mensagem com send() para "estacaoBasePai", ou seja,
+		 * o Sink Node ligado a esse Sensor, apos esse Sink receber a Msg
+		 * ele retorna a este Sensor que o Sink "ainda esta vivo"
+		 * 
+		 * Se ainda estiver vivo, este sensor nao faz nada
+		 * senao, este Sensor deve "limpar" seus atributos para que este possa
+		 * receber um novo Sink
+		 */
 	}
 
 	@Override
