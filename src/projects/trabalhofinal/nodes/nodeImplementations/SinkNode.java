@@ -18,6 +18,8 @@ import projects.trabalhofinal.nodes.timers.WsnMessageTimer;
  */
 
 public class SinkNode extends Node {
+	
+	private int tempoRound = 0;
 
     @Override
     public void handleMessages(Inbox inbox) {
@@ -37,8 +39,16 @@ public class SinkNode extends Node {
 
     @Override
     public void preStep() {
-       // throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-       
+        // throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        /**
+         * A cada 50 rounds sera feito um novo broadcast,
+         * ou seja, sera construido uma nova arvore de roteamento a partir deste Sink
+         */
+    	if (tempoRound == 50) {
+    		this.construirRoteamento();
+    		tempoRound = 0;
+    	}
+    	tempoRound++;
     }
 
     @NodePopupMethod(menuText = "Construir Arvore de Roteamento")

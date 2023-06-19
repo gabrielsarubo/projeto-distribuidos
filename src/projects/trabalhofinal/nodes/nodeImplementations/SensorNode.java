@@ -85,7 +85,12 @@ public class SensorNode extends Node {
 					// Estacao-Base
 					// ou seja, este No Sensor (ou outro No) quer "enviar" uma Mensagem ao No Estacao-Base
 					shouldBroadcast = Boolean.FALSE;
-					this.send(wsnMessage, proximoNoAteEstacaoBase);
+					
+					// previnir que este sensor envie uma mensagem ao proximoNo
+					// depois que esse atributor for "resetado"
+					if (proximoNoAteEstacaoBase != null) {
+						this.send(wsnMessage, proximoNoAteEstacaoBase);
+					}
 				}
 
 				// Se shouldBroadcast for TRUE, entao este No Sensor continua transmitindo a
@@ -137,6 +142,23 @@ public class SensorNode extends Node {
 			}
 			tempoRound++;
 		}
+		
+		/**
+		 * Independente se ja existe um proximoNoAteEstacaoBase ou nao
+		 * este contador ira resetar este No Sensor quando o simulador fizer 100 rounds
+		 * desde quando este Sensor foi criado, ou seja, quando este Sensor tiver "100 rounds de idade"
+		 * -- a logica para "resetar este No Sensor" eh definindo null para "proximoNoAteEstacaoBase" --
+		 * 
+		 * TODO por que a cada 100 rounds?
+		 * 
+		 * Vale lembrar que "this.tempoRound" sera resetado automaticamente quando for o momento
+		 * deste Sensor enviar uma Mensagem tipo-1 para o Sink
+		 */
+		if (this.tempoRound == 100) {
+			proximoNoAteEstacaoBase = null;
+
+			this.setColor(Color.BLACK);
+		}
 	}
 
 	@Override
@@ -144,7 +166,7 @@ public class SensorNode extends Node {
 		// throw new UnsupportedOperationException("Not supported yet."); //To change
 		// body of generated methods, choose Tools | Templates.
 		// o tempo (em rounds) de envio estara sempre entre 50 e 149
-		tempoEnvio = 50 + Util.nextInt(100);
+		tempoEnvio = 101 + Util.nextInt(51);
 		System.out.println("SensorNode-"+this.ID+" envia pacotes a cada "+tempoEnvio+" rounds");
 		this.setColor(Color.BLACK);
 	}
@@ -182,6 +204,8 @@ public class SensorNode extends Node {
 		System.out.println("----\nExibindo atributos de SensorNode-"+this.ID);
 		System.out.println("Proximo No ate estacao-base = " + proximoNoAteEstacaoBase);
 		System.out.println("nSaltosDesdeOrigem = "+nSaltosDesdeOrigem);
+		System.out.println("tempoEnvio, envia msg a cada = "+tempoEnvio+" rounds");
+		System.out.println("tempoRound (tempo de vida) = "+tempoRound);
 	}
 
 }
