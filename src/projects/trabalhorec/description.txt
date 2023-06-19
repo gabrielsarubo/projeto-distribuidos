@@ -1,0 +1,5 @@
+Trabalho Exame - Sistemas Distribuidos (jun 19, 2023)
+
+Este pacote (trabalhorec) armazena todos os arquivos relacionados ao projeto de recuperacao.
+
+Feito por Gabriel Sarubo.
