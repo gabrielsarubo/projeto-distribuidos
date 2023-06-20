@@ -31,8 +31,7 @@ public class WsnMessageTimer extends Timer {
     		// Fazer um broadcast da mensagem para todos os Nos vizinhos
     		// este metodo envia uma msg e recebe um pacote
     		
-    		// TODO por que colocar ((Node)node) ? 
-    		// para referenciar o No em que este Timer foi chamado
+    		// Colocar ((SinkNode)node) para referenciar o No em que este Timer foi chamado
     		((SinkNode)node).broadcast(message);
     	}
     }

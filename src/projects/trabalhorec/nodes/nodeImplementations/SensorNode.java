@@ -20,9 +20,6 @@ public class SensorNode extends Node {
 	// Armazenar o no que sera usado para alcancar a Estacao-Base
 	private Node proximoNoAteEstacaoBase;
 
-	// Armazena o numero de sequencia da ultima mensagem recebida
-	//private Integer sequenceNumber = 0;
-
 	// Armazena o No Estacao-Base atual que este Sensor deve mandar msg
 	private Node estacaoBasePai;
 
@@ -34,9 +31,6 @@ public class SensorNode extends Node {
 
 	@Override
 	public void handleMessages(Inbox inbox) {
-		//System.out.println("\n---\nDentro de SensorNode-"+this.ID);
-    	//System.out.println("Tamanho do inbox do Sensor-"+this.ID+" = "+inbox.size());
-
 		while (inbox.hasNext()) {
 			Message message = inbox.next();
 
@@ -44,11 +38,15 @@ public class SensorNode extends Node {
 				Boolean shouldBroadcast = Boolean.TRUE;// deve transmitir em Broacast?
 				WsnMsg wsnMessage = (WsnMsg) message;// Converter message para um objeto do tipo WsnMsg
 
-				if (wsnMessage.tipoMsg == 0) { // A mensagem e um flood, deve-se atualizar a rota
+				// A mensagem eh uma transmissao broadcast,
+				// portanto, este No devera atualizar a rota
+				if (wsnMessage.tipoMsg == 0) {
 					/*
-					 * Se a condicao abaixo for verdade, siginifca que este No Sensor nao possui um
-					 * proximo No Ate Estacao-Base, logo, ele esta "perdido", nao possui um caminho
-					 * de volta para o Sink
+					 * Se a condicao abaixo for verdade:
+					 *   (proximoNoAteEstacaoBase == null)
+					 * isso siginifca que este No Sensor nao possui um
+					 * proximo No Ate Estacao-Base, logo, ele esta "perdido",
+					 * nao possui um caminho de volta para o Sink
 					 * 
 					 * Tambem pode significar que a Mensagem tipo-0 esta "indo" para os outros Nos
 					 * Sensores e tentando Estabelecer uma Rota (ou arvore de roteamento)
@@ -56,20 +54,37 @@ public class SensorNode extends Node {
 					if (proximoNoAteEstacaoBase == null) {
 						wsnMessage.nSaltosDesdeOrigem++;
 						this.nSaltosDesdeOrigem = wsnMessage.nSaltosDesdeOrigem;
-						//System.out.println("SensorNode-" + this.ID + " recebe mensagem do tipo-0 de SinkNode-"
-						//		+ wsnMessage.origem.ID);
-
 						estacaoBasePai = wsnMessage.origem;
 						proximoNoAteEstacaoBase = inbox.getSender();// proximo No ate Estacao-Base vai ser o No que
 																	// enviou a mensagem para este SensorNode
-						//sequenceNumber = wsnMessage.sequenceID;
-						// System.out.println("O proximo no ate estacao-base do SensorNode-"+this.ID+"
-						// eh o Node-"+proximoNoAteEstacaoBase.ID);
-
 						this.setColor(wsnMessage.origem.getColor());
 					} else if (wsnMessage.nSaltosDesdeOrigem >= (this.nSaltosDesdeOrigem-1)) {
+						/**
+						 * Caso o programa entre nesta condicao, isso quer dizer que:
+						 * - a mensagem eh do tipo-0, ou seja, um broadcast
+						 * - proximoNoAteEstacaoBase != null, ou seja, existe uma "referencia" para algum Sink
+						 * 	 (perceba que essa referencia pode ser para um Sink que existe ou nao existe mais)
+						 * - o numero de saltos desde a origem da Mensagem atual eh maior ou igual
+						 *   ao numero de saltos atual deste No Sensor
+						 *   
+						 *   caso a ultima condicao acima for verdade, entao deve-se parar
+						 *   de encaminhar (em broadcast) esta mensagem
+						 */
 						shouldBroadcast = Boolean.FALSE;
 					} else {
+						/**
+						 * Caso nenhuma das condicoes acima for verdade, isso quer dizer que:
+						 * - ainda existe uma "referencia" para algum Sink
+						 * - a mensagem esta vindo de um Sink MAIS PERTO
+						 *   OU a mensagem esta vindo do MESMO Sink, e se esse for o caso,
+						 *   o algoritmo entra em ELSE, e este Sensor deve apenas parar de encaminhar
+						 *   esta mensagem
+						 *   
+						 *   se a mensagem esta vindo de um Sink MAIS PERTO
+						 *   && a origem da Mensagem vem de um Sink diferente do atual,
+						 *   entao defina a origem desta Mensamge (novo Sink)
+						 *   como a nova estacao base para onde este Sensor deve enviar mensagens tipo-1
+						 */
 						if (wsnMessage.origem.ID != this.estacaoBasePai.ID) {
 							wsnMessage.nSaltosDesdeOrigem++;
 							this.nSaltosDesdeOrigem = wsnMessage.nSaltosDesdeOrigem;
@@ -81,13 +96,12 @@ public class SensorNode extends Node {
 						}
 					}
 				} else if (wsnMessage.tipoMsg == 1) {
-					// Se entrar neste IF, isso significa que a Mensagem esta "voltando" para o No
-					// Estacao-Base
+					// Se entrar neste IF, isso significa que a Mensagem esta "voltando" para o No Estacao-Base
 					// ou seja, este No Sensor (ou outro No) quer "enviar" uma Mensagem ao No Estacao-Base
 					shouldBroadcast = Boolean.FALSE;
 					
 					// previnir que este sensor envie uma mensagem ao proximoNo
-					// depois que esse atributor for "resetado"
+					// enquanto nao houver um proximo No ate estacao-base
 					if (proximoNoAteEstacaoBase != null) {
 						this.send(wsnMessage, proximoNoAteEstacaoBase);
 					}
@@ -97,13 +111,6 @@ public class SensorNode extends Node {
 				// Mensagem aos vizinhos
 				// caso contrario, este No Sensor nao transmite a Mensagem para os Nos vizinhos
 				if (shouldBroadcast) {
-					/*
-					 * Colocar dentro da futura Mensagem uma referencia para este No Sensor
-					 * que vai dizer ao No que receber esta msg "qual No encaminhou a msg"
-					 * 
-					 * TODO Mas o inbox.getSender() ja nao faz isso?
-					 */
-					//wsnMessage.forwardingHop = this;
 					this.broadcast(wsnMessage);
 				}
 			}
@@ -148,8 +155,6 @@ public class SensorNode extends Node {
 		 * este contador ira resetar este No Sensor quando o simulador fizer 100 rounds
 		 * desde quando este Sensor foi criado, ou seja, quando este Sensor tiver "100 rounds de idade"
 		 * -- a logica para "resetar este No Sensor" eh definindo null para "proximoNoAteEstacaoBase" --
-		 * 
-		 * TODO por que a cada 100 rounds?
 		 * 
 		 * Vale lembrar que "this.tempoRound" sera resetado automaticamente quando for o momento
 		 * deste Sensor enviar uma Mensagem tipo-1 para o Sink

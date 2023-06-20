@@ -58,7 +58,6 @@ public class SinkNode extends Node {
     	 * new WsnMsg()
     	 * 1: representa o ID da sequencia
     	 * this: aponta para o No de origem, neste caso No de origem eh este proprio Sink
-    	 * null: aponta para o No de destino, neste caso, nao existe um destino
     	 * 0: msg do tipo 0 serve para estabelecimento de rotas
     	 */
         WsnMsg wsnMessage = new WsnMsg(1, this, 0);
